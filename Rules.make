@@ -9,7 +9,7 @@ ifeq ($(OS), )
   OS := linux
 endif
 
-PROJECT_RELPATH = osa.base
+PROJECT_RELPATH = kindle
 
 ifeq ($(OS),Windows_NT)
   PROJECT_BASE     := $(CURDIR)/..
@@ -22,12 +22,17 @@ endif
 PROJECT_PATH     := $(PROJECT_BASE)/$(PROJECT_RELPATH)
 
 # Code gen tools
-CODEGEN_PATH_HOST:= /home/xiaoxiong/workspace/TI816X/DVRRDK_04.00.00.03/ti_tools/cgt_a8/arago/linux-devkit
-CODEGEN_PREFIX   := $(CODEGEN_PATH_HOST)/bin/arm-arago-linux-gnueabi-
-CSTOOL_PREFIX    := arm-arago-linux-gnueabi-
+MD2HTML_NAME   := md2html.py
+MD2HTML_TOOL   := $(PROJECT_PATH)/script/$(MD2HTML_NAME)
+KINDLE_CONFIG  := $(PROJECT_PATH)/script/kindleconfig.py
+MARKDOWN_TOOL  := $(PROJECT_PATH)/script/Markdown.py
+KINDLEGEN_NAME := kindlegen
+KINDLEGEN_PATH := $(PROJECT_PATH)/bin
+KINDLEGEN_TOOL := $(KINDLEGEN_PATH)/$(KINDLEGEN_NAME)
 ifeq ($(OS),Windows_NT)
-CODEGEN_PREFIX   := $(TI_SW_ROOT)/cgt_a8/arm-2009q1/bin/arm-none-linux-gnueabi-
-CSTOOL_PREFIX    := arm-none-linux-gnueabi-
+KINDLEGEN_NAME := kindlegen
+KINDLEGEN_PATH := $(PROJECT_PATH)/bin
+KINDLEGEN_TOOL := $(KINDLEGEN_PATH)/$(KINDLEGEN_NAME)
 endif
 
 # BIOS side tools
@@ -60,20 +65,11 @@ endif
 
 endif
 
-TREAT_WARNINGS_AS_ERROR=no
-
-#include $(ROOTDIR)/makerules/build_config.mk
-#include $(ROOTDIR)/makerules/env.mk
-#include $(ROOTDIR)/makerules/platform.mk
-#include $(dvr_rdk_PATH)/component.mk
-
 #
 #   Export global environment variables.
 #
-export OS
-export PLATFORM
-export CORE
 export PROJECT_PATH
-export TREAT_WARNINGS_AS_ERROR
-export CODEGEN_PREFIX
-export CONFIG
+export MD2HTML_TOOL
+export KINDLE_CONFIG
+export MARKDOWN_TOOL
+export KINDLEGEN_TOOL

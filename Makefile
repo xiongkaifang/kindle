@@ -9,57 +9,24 @@
 #
 include Rules.make
 
-##########################################
-#                                        #
-# Codecs System Top Level Build Targets  #
-#                                        #
-##########################################
+#################################################
+#                                               #
+# Kindle Ebooks System Top Level Build Targets  #
+#                                               #
+#################################################
 
-.PHONY : osa clean
+.PHONY : clean
 
-osa:
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/osa MODULE=osa
+all: clean ebooks
 
-debug_test: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/debug_test MODULE=debug_test
+EBOOKS=$(shell ls ebooks)
 
-osa_test: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_test MODULE=osa_test
+clean:
+	@$(foreach book,$(EBOOKS),$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/ebooks/$(book) EBOOK=$(book) clean;)
 
-osa_console: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_console MODULE=osa_console
+ebooks: dumy
+	@$(foreach book,$(EBOOKS),$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/ebooks/$(book) EBOOK=$(book);)
+	@echo Finished to generate ebooks.
 
-osa_timer: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_timer MODULE=osa_timer
-
-osa_task: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_task MODULE=osa_task
-
-osa_chdl: osa
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_chdl MODULE=osa_chdl
-
-osa_clean:
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/osa MODULE=osa clean
-
-debug_test_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/debug_test MODULE=debug_test clean
-
-osa_test_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_test MODULE=osa_test clean
-
-osa_console_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_console MODULE=osa_console clean
-
-osa_timer_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_timer MODULE=osa_timer clean
-
-osa_task_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_task MODULE=osa_task clean
-
-osa_chdl_clean: osa_clean
-	$(MAKE) -fMAKEFILE.MK -C$(PROJECT_PATH)/demos/osa_task MODULE=osa_chdl clean
-
-clean: osa_clean debug_test_clean osa_test_clean osa_console_clean osa_timer_clean osa_task_clean \
-	   osa_chdl_clean
-
-all: clean osa osa_test debug_test osa_console osa_timer osa_task osa_chdl
+dumy:
+	@echo Begin to generate ebooks ...

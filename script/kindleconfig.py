@@ -5,11 +5,11 @@
 ################################################################################
 #
 #
-#  @File name  : kindle_ebook.py
+#  @File name  : kindleconfig.py
 #
 #  @Author     : xiong-kaifang   Version: v1.0   Date: 2016-05-23
 #
-#  @Description: The turtorial for python minidom.
+#  @Description: The script to configuring kindle's ebook using xml file.
 #
 #
 #  @History    : Review history

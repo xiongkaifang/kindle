@@ -5,60 +5,33 @@
 ifndef $(COMMON_FOOTER_MK)
 COMMON_FOOTER_MK = 1
 
-OBJS=$(subst .c,.o, $(FILES) )
+OBJS=$(subst .md,.html, $(FILES))
 
-OBJ_DIR=$(OBJ_BASE_DIR)/$(MODULE)/$(CONFIG)
+OUT=$(EBOOK).mobi
 
-vpath %.o $(OBJ_DIR)
+$(EBOOK): html mobi
 
-LIB=$(MODULE).a
+%.html:%.md
+	@echo \# $(EBOOK): Compiling $<
+	$(CC1) $(CC_OPTS) $<
 
-EXE=$(EXE_BASE_DIR)/$(CONFIG)/$(MODULE).out
+html: $(OBJS)
 
-SO_LIB=$(EXE_BASE_DIR)/$(CONFIG)/lib$(MODULE).so
+opf:
+	@echo \# $(EBOOK): Configuring $(XMLFILE) ...
+	$(CC2) $(CC_OPTS) $(XMLFILE)
 
-.c.o:
-	@echo \# $(MODULE): $(PLATFORM): Compiling $<
-	@$(CC) $(CC_OPTS) $(OPTI_OPTS) $(DEFINE) $(INCLUDE) -o $(OBJ_DIR)/$@ $<
-
-
-lib : $(LIB_DIR)/$(LIB)
-
-$(LIB_DIR)/$(LIB) : $(OBJS)
-	@echo \# $(MODULE): $(PLATFORM): Creating archive $(LIB)
-	$(AR) $(AR_OPTS) $(LIB_DIR)/$(LIB) $(OBJ_DIR)/*.o
-
-obj: $(OBJS)
+mobi: opf
+	@echo \# $(EBOOK): Compiling $(OUT) ...
+	$(LD) $(LD_OPTS) $(OPFFILE) -o $(EBOOK).mobi
+	@echo \# $(EBOOK): Generated ebook: $(OUT) !!!
+	@echo \#
 
 clean:
-	@echo \# $(MODULE): $(PLATFORM): Deleting temporary files
-	-rm -f MAKEFILE.DEPEND
-	-rm -f $(LIB_DIR)/$(LIB)
-	-rm -f $(OBJ_DIR)/*.*
-
-depend:
-#	@echo \# $(MODULE): $(PLATFORM): Making directories, if not already created
-	-mkdir -p $(LIB_DIR)
-	-mkdir -p $(OBJ_DIR)
-	-mkdir -p $(EXE_BASE_DIR)/$(CONFIG)
-	@echo \# $(MODULE): $(PLATFORM): Building dependancies
-	$(CC) $(DEFINE) $(INCLUDE) $(FILES) -M > MAKEFILE.DEPEND
-
-so:
-	@echo \# $(MODULE): $(PLATFORM): Linking to .so
-	$(CC) $(LD_OPTS) -shared -fpic -o $(SO_LIB) $(OBJ_DIR)/*.o $(LIBS)
-	@echo \# Final shared library $(SO_LIB) !!!	
-	@echo \#
-
-exe:
-	@echo \# $(MODULE): $(PLATFORM): Linking ...
-	$(LD) $(LD_OPTS) -o $(EXE) $(LIBS)
-	@echo \# Final executable $(EXE) !!!	
-	@echo \#
-
-install:
-
-
--include MAKEFILE.DEPEND
+	@echo \# $(EBOOK): Deleting temporary files ...
+	-rm -f  $(OUT_BASE_DIR)/$(OUT)
+	-rm -f  $(OUT_BASE_DIR)/*.opf
+	-rm -f  $(OUT_BASE_DIR)/*.ncx
+	-rm -f  $(OUT_BASE_DIR)/*.html
 
 endif #	ifndef $(COMMON_FOOTER_MK)
