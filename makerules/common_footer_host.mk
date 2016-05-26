@@ -13,7 +13,7 @@ $(EBOOK): html mobi
 
 %.html:%.md
 	@echo \# $(EBOOK): Compiling $<
-	$(CC1) $(CC_OPTS) $<
+	$(CC1) $(MARKDOWN_TOOL) $<
 
 html: $(OBJS)
 
